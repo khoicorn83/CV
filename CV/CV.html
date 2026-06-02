@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Nguyễn Văn A</title>
+    <style>
+        /* --- ĐỊNH DẠNG CHUNG & MÀU SẮC --- */
+        :root {
+            --bg-body: #eef2f7;          /* Màu nền ngoài cùng */
+            --bg-main: #ffffff;          /* Màu nền trắng chủ đạo của CV */
+            --bg-sidebar: #e1e7f0;       /* Màu nền xám xanh nhẹ của Sidebar */
+            --primary-blue: #0b2545;     /* Màu xanh dương đậm (Chữ tiêu đề) */
+            --accent-gold: #c5a880;      /* Màu vàng gold (Đường viền, Timeline) */
+            --text-dark: #333333;        /* Màu chữ chính */
+            --text-muted: #666666;       /* Màu chữ phụ, mô tả */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        /* Khung nội dung chính của CV */
+        .cv-container {
+            width: 100%;
+            max-width: 1100px;
+            background-color: var(--bg-main);
+            border: 1px solid var(--accent-gold);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: block;
+        }
+
+        /* --- 1. HEADER CỐ ĐỊNH (STICKY TOP) --- */
+        .cv-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: var(--bg-main);
+            border-bottom: 1px solid var(--accent-gold);
+            padding: 25px 40px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
+        .avatar-box {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-gold);
+            overflow: hidden;
+            background: #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .avatar-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-titles h1 {
+            color: var(--primary-blue);
+            font-size: 32px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-titles p {
+            color: var(--accent-gold);
+            font-size: 14px;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-top: 5px;
+            letter-spacing: 1px;
+        }
+
+        /* --- BỐ CỤC PHẦN THÂN (SỬ DỤNG FLEXBOX ĐỂ HOẠT ĐỘNG ĐƯỢC STICKY) --- */
+        .cv-body {
+            display: flex;
+            width: 100%;
+            align-items: flex-start; /* Giúp các cột không bị ép dài bằng nhau, phục vụ việc cố định */
+        }
+
+        /* --- 2. SIDEBAR CỐ ĐỊNH --- */
+        .cv-sidebar {
+            width: 32%;
+            background-color: var(--bg-sidebar);
+            padding: 35px 25px;
+            align-self: stretch; /* Đảm bảo màu nền xám phủ hết chiều cao */
+        }
+
+        /* Khung bọc nội dung bên trong sidebar để cố định vị trí khi cuộn trang */
+        .sidebar-sticky-wrapper {
+            position: sticky;
+            top: 170px; /* Khoảng cách vừa đủ dưới Header (Chiều cao header ~140px + 30px khoảng cách) */
+        }
+
+        .sidebar-section {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            color: var(--primary-blue);
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(11, 37, 69, 0.1);
+            padding-bottom: 5px;
+            font-weight: bold;
+        }
+
+        /* Contact Items */
+        .contact-item {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+        }
+        .contact-item strong {
+            width: 75px;
+            color: var(--primary-blue);
+            display: inline-block;
+        }
+
+        /* Skills Progress Bars */
+        .skill-item {
+            margin-bottom: 12px;
+        }
+        .skill-name {
+            font-size: 13px;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(255,255,255,0.6);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-blue);
+            border-radius: 3px;
+        }
+
+        /* Languages */
+        .lang-item {
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        /* --- 3. PHẦN TIMELINE (CUỘN ĐƯỢC) --- */
+        .cv-content {
+            width: 68%;
+            padding: 35px 40px;
+        }
+
+        .content-title {
+            color: var(--primary-blue);
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        /* Khung bọc hệ thống Timeline */
+        .timeline-container {
+            position: relative;
+        }
+
+        /* Đường trục dọc màu vàng chạy xuyên suốt */
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 130px; /* Vị trí căn giữa mốc thời gian và nội dung */
+            top: 10px;
+            bottom: 10px;
+            width: 3px;
+            background-color: var(--accent-gold);
+        }
+
+        /* Từng khối mốc công việc */
+        .timeline-item {
+            display: flex;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        /* Cột bên trái: Mốc thời gian */
+        .timeline-time {
+            width: 110px;
+            text-align: right;
+            padding-right: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            padding-top: 2px;
+            flex-shrink: 0;
+        }
+
+        /* Dấu chấm tròn màu vàng nằm đè lên đường trục dọc */
+        .timeline-dot {
+            position: absolute;
+            left: 126px;
+            top: 5px;
+            width: 11px;
+            height: 11px;
+            background-color: var(--accent-gold);
+            border: 2px solid var(--bg-main);
+            border-radius: 50%;
+            z-index: 5;
+        }
+
+        /* Cột bên phải: Nội dung công việc */
+        .timeline-details {
+            flex: 1;
+            padding-left: 35px;
+        }
+
+        .timeline-details h3 {
+            color: var(--primary-blue);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .timeline-details ul {
+            list-style-type: disc;
+            padding-left: 18px;
+        }
+
+        .timeline-details li {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 5px;
+        }
+
+        /* Hiệu ứng di chuột vào khu vực công việc để tăng tính tương tác */
+        .timeline-details:hover h3 {
+            color: var(--accent-gold);
+            transition: color 0.2s ease;
+        }
+
+        /* Tối ưu hiển thị trên màn hình máy tính bảng và điện thoại */
+        @media (max-width: 850px) {
+            .cv-body { flex-direction: column; }
+            .cv-sidebar { width: 100%; }
+            .cv-content { width: 100%; }
+            .sidebar-sticky-wrapper { position: static; }
+            .cv-header { position: static; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cv-container">
+        
+        <header class="cv-header">
+            <div class="avatar-box">
+                <img src="1.jfif" alt="Mô tả bức ảnh">
+            </div>
+            <div class="profile-titles">
+                <h1>Nguyễn Quang Khôi</h1>
+                <p>Sinh viên năm 2 ngành Công nghệ thông tin</p>
+            </div>
+        </header>
+
+        <div class="cv-body">
+            
+            <aside class="cv-sidebar">
+                <div class="sidebar-sticky-wrapper">
+                    
+                    <div class="sidebar-section">
+                        <div class="section-title">Liên hệ</div>
+                        <div class="contact-item"><strong>Email:</strong> nguyenkhoi080306@gmail.com</div>
+                        <div class="contact-item"><strong>SĐT:</strong> 0974616783</div>
+                        <div class="contact-item"><strong>Địa chỉ:</strong> Bạch Mai, Hà Nội</div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <div class="section-title">Kỹ năng</div>
+                        
+                        <div class="skill-item">
+                            <div class="skill-name">HTML/CSS</div>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 90%;"></div></div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">JavaScript</div>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 85%;"></div></div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">React</div>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 75%;"></div></div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">Node.js</div>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 70%;"></div></div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">Unity</div>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 75%;"></div></div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">Python</div>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 70%;"></div></div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">C/C++</div>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 80%;"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <div class="section-title">Sở thích</div>
+                        <div class="lang-item">Board game</div>
+                        <div class="lang-item">Chạy bộ, bơi lội</div>
+                        <div class="lang-item">Anime</div>
+                    </div>
+
+                </div>
+            </aside>
+
+            <main class="cv-content">
+                <div class="content-title">Kinh nghiệm</div>
+                
+                <div class="timeline-container">
+
+                    <div class="timeline-item">
+                        <div class="timeline-time">Hiện tại</div>
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-details">
+                            <h3>Đang là sinh viên năm 2 ngành Công nghệ thông tin, đại học Thuỷ Lợi</h3>
+                            <ul>
+                                <li>GPA: 3.6</li>
+                                <li>Đạt điểm A môn: Lập trình nâng cao, Lập trình Python, Nền tảng phát triển Web, Cấu trúc dữ liệu và giải thuật, Toán rời rạc...</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-time">11/2025 - 5/2026</div>
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-details">
+                            <h3>Tham gia nghiên cứu khoa học cấp trường</h3>
+                            <ul>
+                                <li><a href="https://github.com/Tiennguyen247/chemxlab">Thông tin dự án</a></li>
+<li><a href="https://chemxlab.vercel.app/?fbclid=IwY2xjawSLjoZleHRuA2FlbQIxMQBzcnRjBmFwcF9pZAEwAAEeOsYqg2OyE8aQDjC_9iP4c7bmJ4s6dBHxyvbK49oXWjQ-Fl1dSl2kesOfFik_aem_62Bdiw_hsNUkvrTB8sohqg">Sản phẩm</a></li>                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-time">11/2025 - 12/2025</div>
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-details">
+                            <h3>Phát triển game bằng Unity</h3>
+                            <ul>
+                                <li>Phối hợp làm việc nhóm để tạo ra sản phẩm.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-time">2025</div>
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-details">
+                            <h3>Bắt đầu học các Egnine Game</h3>
+                            <ul>
+                                <li>Unity, UnrealEgnine, Godot, Pygame, Phaser, ....</li
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-time">2024</div>
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-details">
+                            <h3>Thi THPTQG</h3>
+                            <ul>
+                                <li>Khối A: 26 điểm</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+
+        </div>
+    </div>
+
+</body>
+</html>
